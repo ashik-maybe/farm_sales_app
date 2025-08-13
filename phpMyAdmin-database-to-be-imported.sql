@@ -17,7 +17,7 @@ CREATE TABLE products (
 );
 
 -- Insert sample products (removed image filenames, using whole taka amounts)
--- Prices are taken from https://www.shwapno.com/ and https://ghorerbazar.com/
+-- Prices are taken from https://www.shwapno.com/ and https://ghorerbazar.com/ (Aug 13, 2025) ; যদি থাকে
 INSERT INTO products (name, category, price_per_unit, stock_quantity) VALUES
 -- Milk
 ('Cow Milk', 'Dairy', 80, 70),
@@ -25,16 +25,19 @@ INSERT INTO products (name, category, price_per_unit, stock_quantity) VALUES
 ('Camel Milk', 'Dairy', 110, 40),
 
 -- Eggs
-('Chicken Eggs', 'Eggs', 13, 500),
-('Duck Eggs', 'Eggs', 30, 200),
-('Quail Eggs', 'Eggs', 4, 150),
-('Pigeon Eggs', 'Eggs', 50, 50),
+('Chicken Egg', 'Eggs', 13, 500),
+('Duck Egg', 'Eggs', 30, 200),
+('Quail Egg', 'Eggs', 4, 150),
+('Pigeon Egg', 'Eggs', 50, 50),
 
--- Fish (freshwater only)
-('Rui Fish', 'Fish', 380, 70),
-('Katla Fish', 'Fish', 395, 60),
-('Pangasius Fish', 'Fish', 190, 70),
-('Tilapia Fish', 'Fish', 285, 60),
+-- Fish (পুকুর থেকে ধরা)
+('Rui Fish', 'Fish', 380, 170),
+('Katla Fish', 'Fish', 395, 160),
+('Pangas Fish', 'Fish', 190, 250),
+('Tilapia Fish', 'Fish', 285, 165),
+('Boal Fish', 'Fish', 850, 120),
+('Carpu Fish', 'Fish', 295, 130),
+('Koi Fish', 'Fish', 375, 145),
 
 -- Meat
 ('Beef', 'Meat', 795, 60),
@@ -43,7 +46,9 @@ INSERT INTO products (name, category, price_per_unit, stock_quantity) VALUES
 ('Duck Meat', 'Meat', 750, 50),
 ('Turkey Meat', 'Meat', 600, 45),
 ('Sheep Meat', 'Meat', 1300, 35),
-('Pigeon Meat', 'Meat', 500, 40),
+('Pigeon Meat', 'Meat', 500, 55),
+('Camel Meat', 'Meat', 2000, 20),
+('Quail Meat', 'Meat', 270, 65),
 
 -- Honey
 ('Black Seed Honey', 'Honey', 1600, 20),
