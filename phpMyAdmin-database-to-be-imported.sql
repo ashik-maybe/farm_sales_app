@@ -17,42 +17,43 @@ CREATE TABLE products (
 );
 
 -- Insert sample products (removed image filenames, using whole taka amounts)
+-- Prices are taken from https://www.shwapno.com/ and https://ghorerbazar.com/
 INSERT INTO products (name, category, price_per_unit, stock_quantity) VALUES
 -- Milk
-('Cow Milk', 'Dairy', 60, 100),
-('Goat Milk', 'Dairy', 80, 50),
-('Sheep Milk', 'Dairy', 90, 40),
+('Cow Milk', 'Dairy', 80, 70),
+('Goat Milk', 'Dairy', 60, 50),
+('Camel Milk', 'Dairy', 110, 40),
 
 -- Eggs
-('Chicken Eggs', 'Eggs', 120, 200),
-('Duck Eggs', 'Eggs', 150, 100),
-('Quail Eggs', 'Eggs', 200, 150),
-('Pigeon Eggs', 'Eggs', 180, 80),
+('Chicken Eggs', 'Eggs', 13, 500),
+('Duck Eggs', 'Eggs', 30, 200),
+('Quail Eggs', 'Eggs', 4, 150),
+('Pigeon Eggs', 'Eggs', 50, 50),
 
 -- Fish (freshwater only)
-('Rui Fish', 'Fish', 200, 50),
-('Katla Fish', 'Fish', 180, 60),
-('Pangasius Fish', 'Fish', 150, 70),
-('Tilapia Fish', 'Fish', 160, 60),
+('Rui Fish', 'Fish', 380, 70),
+('Katla Fish', 'Fish', 395, 60),
+('Pangasius Fish', 'Fish', 190, 70),
+('Tilapia Fish', 'Fish', 285, 60),
 
 -- Meat
-('Beef', 'Meat', 400, 60),
-('Goat Meat', 'Meat', 450, 40),
-('Chicken Meat', 'Meat', 220, 80),
-('Duck Meat', 'Meat', 300, 50),
-('Turkey Meat', 'Meat', 350, 45),
-('Sheep Meat', 'Meat', 500, 35),
-('Pigeon Meat', 'Meat', 280, 40),
+('Beef', 'Meat', 795, 60),
+('Mutton', 'Meat', 1115, 40),
+('Chicken Meat', 'Meat', 310, 80),
+('Duck Meat', 'Meat', 750, 50),
+('Turkey Meat', 'Meat', 600, 45),
+('Sheep Meat', 'Meat', 1300, 35),
+('Pigeon Meat', 'Meat', 500, 40),
 
 -- Honey
-('Sunflower Honey', 'Honey', 350, 50),
-('Wildflower Honey', 'Honey', 300, 70),
-('Forest Honey', 'Honey', 400, 40),
+('Black Seed Honey', 'Honey', 1600, 20),
+('Lichu Flower Honey', 'Honey', 1200, 15),
+('Mixed Flower Honey', 'Honey', 1000, 30),
 
 -- Wool Products
 ('Wool Sweater', 'Wool', 800, 25),
-('Wool Socks', 'Wool', 200, 100),
-('Wool Scarf', 'Wool', 500, 30),
+('Wool Socks', 'Wool', 100, 100),
+('Wool Scarf', 'Wool', 400, 30),
 
 -- Leather Products
 ('Leather Jacket', 'Leather', 2500, 15),
