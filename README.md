@@ -5,7 +5,7 @@
 
 1. Install **[XAMPP](https://www.apachefriends.org)**
 2. **Start Apache and MySQL** from XAMPP Control Panel
-3. Copy *this* folder to `C:\xampp\htdocs\farm_sales_app\`
+3. Copy **this folder** to `C:\xampp\htdocs\farm_sales_app\`
 4. **Create database**:
    - Open [http://localhost/phpmyadmin](http://localhost/phpmyadmin)
    - Create database named `organic_farm`
