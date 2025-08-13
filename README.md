@@ -1,4 +1,5 @@
 # 🌱 Ashik's Organic Store
+*Ekkere Khati Mal*
 
 ## 🚀 Quick Setup
 
@@ -21,7 +22,6 @@
 
 ---
 
-Made with ❤️ for 
-##### CSE311.10 Database Management System
+##### Made with ❤️ for CSE311.10 Database Management System
 ###### Summer 2025
 
