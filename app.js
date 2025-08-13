@@ -1,4 +1,4 @@
-// DOM Elements
+// DOM Element References: Cache elements for better performance and readability
 const customerView = document.getElementById('customerView');
 const managerView = document.getElementById('managerView');
 const customerTab = document.getElementById('customerTab');
@@ -11,12 +11,13 @@ const productForm = document.getElementById('productForm');
 const managerProducts = document.getElementById('managerProducts');
 const transactionsList = document.getElementById('transactionsList');
 
-// State
-let products = [];
-let cart = [];
+// Application State: Centralized data storage for products and shopping cart
+let products = [];  // Why: Global access for both customer and manager views
+let cart = [];      // Why: Persists across UI interactions without server calls
 
-// Switch between views
+// View Management: Toggle between customer and manager interfaces
 function switchTab(view) {
+    // Why: Single responsibility for view switching logic
     if (view === 'customer') {
         customerView.classList.add('active');
         managerView.classList.remove('active');
@@ -27,17 +28,19 @@ function switchTab(view) {
         customerView.classList.remove('active');
         managerTab.classList.add('active');
         customerTab.classList.remove('active');
-        loadManagerData();
+        loadManagerData(); // Why: Load fresh data when switching to manager view
     }
 }
 
-// Format currency (no decimals for BDT)
+// Currency Formatting: Bangladesh-specific whole number formatting
 function formatCurrency(amount) {
+    // Why: Integer conversion matches BDT practical usage (no decimals)
     return `BDT ${parseInt(amount)}`;
 }
 
-// Show notification popup
+// Notification System: Modern popup replacement for browser alerts
 function showNotification(message, type = 'info') {
+    // Why: Better UX than browser alerts, auto-dismissal prevents UI blocking
     const container = document.getElementById('notificationContainer');
     
     const notification = document.createElement('div');
@@ -49,7 +52,7 @@ function showNotification(message, type = 'info') {
     
     container.appendChild(notification);
     
-    // Auto remove after 5 seconds
+    // Why: Automatic cleanup prevents memory leaks and UI clutter
     setTimeout(() => {
         if (notification.parentElement) {
             notification.remove();
@@ -57,26 +60,29 @@ function showNotification(message, type = 'info') {
     }, 5000);
 }
 
-// Load products for customer view
+// Product Loading: Fetch initial product data for customer view
 async function loadProducts() {
+    // Why: Async/await for cleaner error handling and readable flow
     try {
         const response = await fetch('db.php?action=get_products');
         if (!response.ok) throw new Error('Network response was not ok');
         const text = await response.text();
         const jsonData = JSON.parse(text);
         products = jsonData;
-        // Sort by category for better UX
+        // Why: Category sorting improves user browsing experience
         products.sort((a, b) => a.category.localeCompare(b.category));
         renderProducts();
     } catch (error) {
+        // Why: Graceful error handling with user feedback
         console.error('Error loading products:', error);
         showNotification('Error loading products', 'error');
         productGrid.innerHTML = '<p class="error">Error loading products</p>';
     }
 }
 
-// Render products in grid (sorted by category)
+// Product Display: Render products organized by category with emojis
 function renderProducts() {
+    // Why: Clear DOM manipulation pattern with early exit for empty states
     productGrid.innerHTML = '';
     
     if (products.length === 0) {
@@ -84,7 +90,7 @@ function renderProducts() {
         return;
     }
     
-    // Group products by category
+    // Why: Grouping by category improves visual organization and scanning
     const groupedProducts = {};
     products.forEach(product => {
         if (!groupedProducts[product.category]) {
@@ -93,13 +99,14 @@ function renderProducts() {
         groupedProducts[product.category].push(product);
     });
     
-    // Render by category
+    // Why: Sorted category rendering provides consistent user experience
     Object.keys(groupedProducts).sort().forEach(category => {
         const categoryHeader = document.createElement('div');
         categoryHeader.className = 'category-header';
         categoryHeader.innerHTML = `<h3>${category}</h3>`;
         productGrid.appendChild(categoryHeader);
         
+        // Why: Emoji mapping provides visual product identification
         groupedProducts[category].forEach(product => {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
@@ -125,6 +132,7 @@ function renderProducts() {
                 <div class="stock">Stock: ${product.stock_quantity}</div>
             `;
             
+            // Why: Direct event binding for immediate user feedback
             productCard.addEventListener('click', () => {
                 addToCart(product);
             });
@@ -134,13 +142,13 @@ function renderProducts() {
     });
 }
 
-// Add product to cart
+// Cart Management: Add products to shopping cart with stock validation
 function addToCart(product) {
-    // Check if already in cart
+    // Why: Prevent duplicate cart entries while allowing quantity increases
     const existingItem = cart.find(item => item.product_id === parseInt(product.product_id));
     
     if (existingItem) {
-        // If already in cart, increase quantity (if stock allows)
+        // Why: Stock validation prevents overselling
         if (existingItem.quantity < product.stock_quantity) {
             existingItem.quantity += 1;
             showNotification(`${product.name} quantity increased to ${existingItem.quantity}`, 'success');
@@ -149,7 +157,7 @@ function addToCart(product) {
             return;
         }
     } else {
-        // Add new item to cart
+        // Why: Stock availability check prevents adding out-of-stock items
         if (product.stock_quantity > 0) {
             cart.push({
                 product_id: parseInt(product.product_id),
@@ -168,8 +176,9 @@ function addToCart(product) {
     highlightProductCard(parseInt(product.product_id));
 }
 
-// Highlight selected product card
+// Visual Feedback: Temporary highlight for selected products
 function highlightProductCard(productId) {
+    // Why: Visual confirmation improves user confidence in selections
     document.querySelectorAll('.product-card').forEach(card => {
         if (parseInt(card.dataset.id) === productId) {
             card.classList.add('selected');
@@ -180,13 +189,13 @@ function highlightProductCard(productId) {
     });
 }
 
-// Update cart display
+// Cart Display: Update UI with current cart contents and total
 function updateCartDisplay() {
-    // Calculate total
+    // Why: Real-time total calculation provides immediate price feedback
     const total = cart.reduce((sum, item) => sum + (parseInt(item.price) * parseInt(item.quantity)), 0);
     totalAmount.textContent = formatCurrency(total);
     
-    // Update selected items display
+    // Why: Clear empty state messaging improves UX
     if (cart.length === 0) {
         selectedItems.innerHTML = '<p class="placeholder">No items selected yet</p>';
         return;
@@ -208,7 +217,7 @@ function updateCartDisplay() {
         selectedItems.appendChild(itemElement);
     });
     
-    // Add event listeners to remove buttons
+    // Why: Event delegation ensures remove buttons work for dynamically added items
     document.querySelectorAll('.remove-item').forEach(button => {
         button.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -218,8 +227,9 @@ function updateCartDisplay() {
     });
 }
 
-// Remove item from cart
+// Cart Management: Remove items from shopping cart
 function removeFromCart(productId) {
+    // Why: Array manipulation maintains cart integrity
     const itemIndex = cart.findIndex(item => item.product_id === productId);
     if (itemIndex !== -1) {
         const itemName = cart[itemIndex].name;
@@ -229,16 +239,18 @@ function removeFromCart(productId) {
     }
 }
 
-// Handle order submission
+// Order Processing: Handle customer order submission with validation
 orderForm.addEventListener('submit', async (e) => {
+    // Why: Prevent default form submission for custom handling
     e.preventDefault();
     
+    // Why: Early validation prevents unnecessary server calls
     if (cart.length === 0) {
         showNotification('Please select at least one product', 'warning');
         return;
     }
     
-    // Validate form
+    // Why: Form field validation ensures complete order data
     const customerName = document.getElementById('customerName').value.trim();
     const customerPhone = document.getElementById('customerPhone').value.trim();
     const customerAddress = document.getElementById('customerAddress').value.trim();
@@ -248,6 +260,7 @@ orderForm.addEventListener('submit', async (e) => {
         return;
     }
     
+    // Why: Order data preparation for server submission
     const orderData = {
         customerName: customerName,
         customerPhone: customerPhone,
@@ -257,6 +270,7 @@ orderForm.addEventListener('submit', async (e) => {
         items: cart
     };
     
+    // Why: Async order submission with comprehensive error handling
     try {
         const response = await fetch('db.php?action=place_order', {
             method: 'POST',
@@ -275,11 +289,11 @@ orderForm.addEventListener('submit', async (e) => {
         
         if (result.success) {
             showNotification(`Order placed successfully! Order ID: ${result.order_id}`, 'success');
-            // Reset form and cart
+            // Why: Reset form and cart for fresh shopping experience
             orderForm.reset();
             cart = [];
             updateCartDisplay();
-            loadProducts(); // Refresh stock
+            loadProducts(); // Why: Refresh stock quantities after order
         } else {
             showNotification('Error placing order: ' + (result.error || 'Unknown error'), 'error');
         }
@@ -289,13 +303,16 @@ orderForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Manager functions
+// Manager Data Loading: Load products and transactions for management view
 async function loadManagerData() {
+    // Why: Parallel loading improves manager view performance
     await loadManagerProducts();
     await loadTransactions();
 }
 
+// Manager Product Display: Render products with edit/delete controls
 async function loadManagerProducts() {
+    // Why: Separate manager view for product management operations
     try {
         const response = await fetch('db.php?action=get_products');
         if (!response.ok) throw new Error('Network response was not ok');
@@ -310,10 +327,10 @@ async function loadManagerProducts() {
             return;
         }
         
-        // Sort by category
+        // Why: Category sorting improves manager product scanning
         products.sort((a, b) => a.category.localeCompare(b.category));
         
-        // Group by category
+        // Why: Grouping by category matches customer view for consistency
         const groupedProducts = {};
         products.forEach(product => {
             if (!groupedProducts[product.category]) {
@@ -322,13 +339,14 @@ async function loadManagerProducts() {
             groupedProducts[product.category].push(product);
         });
         
-        // Render with management options
+        // Why: Sorted category rendering provides consistent management experience
         Object.keys(groupedProducts).sort().forEach(category => {
             const categoryHeader = document.createElement('div');
             categoryHeader.className = 'category-header';
             categoryHeader.innerHTML = `<h3>${category}</h3>`;
             managerProducts.appendChild(categoryHeader);
             
+            // Why: Emoji mapping provides visual consistency with customer view
             groupedProducts[category].forEach(product => {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card manager-product';
@@ -366,9 +384,9 @@ async function loadManagerProducts() {
     }
 }
 
-// Edit product - FULL IMPLEMENTATION
+// Product Editing: Populate and display edit modal
 async function editProduct(productId) {
-    // Find the product in the current products array
+    // Why: Find product in existing data to avoid extra server call
     const product = products.find(p => p.product_id == productId);
     
     if (!product) {
@@ -376,41 +394,46 @@ async function editProduct(productId) {
         return;
     }
     
-    // Populate the edit form
+    // Why: Direct DOM population for immediate user interaction
     document.getElementById('editProductId').value = product.product_id;
     document.getElementById('editProductName').value = product.name;
     document.getElementById('editProductCategory').value = product.category;
     document.getElementById('editProductPrice').value = product.price_per_unit;
     document.getElementById('editProductStock').value = product.stock_quantity;
     
-    // Show the modal
+    // Why: Modal display for focused editing experience
     document.getElementById('editModal').classList.add('show');
 }
 
-// Close modal function
+// Modal Management: Close edit modal
 function closeModal() {
+    // Why: Simple modal state management
     document.getElementById('editModal').classList.remove('show');
 }
 
-// Close modal when clicking outside
+// Modal Interaction: Close modal when clicking outside
 document.addEventListener('click', function(e) {
+    // Why: Intuitive modal dismissal improves UX
     const modal = document.getElementById('editModal');
     if (modal.classList.contains('show') && e.target === modal) {
         closeModal();
     }
 });
 
-// Close modal with Escape key
+// Modal Interaction: Close modal with Escape key
 document.addEventListener('keydown', function(e) {
+    // Why: Keyboard accessibility follows web standards
     if (e.key === 'Escape') {
         closeModal();
     }
 });
 
-// Handle edit product form submission
+// Product Update: Handle edit form submission
 document.getElementById('editProductForm').addEventListener('submit', async function(e) {
+    // Why: Prevent default form submission for custom handling
     e.preventDefault();
     
+    // Why: Form data preparation for server update
     const updatedProduct = {
         product_id: document.getElementById('editProductId').value,
         name: document.getElementById('editProductName').value.trim(),
@@ -419,6 +442,7 @@ document.getElementById('editProductForm').addEventListener('submit', async func
         stock: parseInt(document.getElementById('editProductStock').value)
     };
     
+    // Why: Async update with comprehensive error handling
     try {
         const response = await fetch('db.php?action=update_product', {
             method: 'POST',
@@ -439,7 +463,7 @@ document.getElementById('editProductForm').addEventListener('submit', async func
             showNotification('Product updated successfully!', 'success');
             closeModal();
             loadManagerProducts();
-            loadProducts(); // Refresh customer view
+            loadProducts(); // Why: Refresh both views to show updated data
         } else {
             showNotification('Error updating product: ' + (result.error || 'Unknown error'), 'error');
         }
@@ -449,12 +473,14 @@ document.getElementById('editProductForm').addEventListener('submit', async func
     }
 });
 
-// Delete product
+// Product Deletion: Handle product removal with confirmation
 async function deleteProduct(productId) {
+    // Why: User confirmation prevents accidental deletions
     if (!confirm('Are you sure you want to delete this product?')) {
         return;
     }
     
+    // Why: Async deletion with comprehensive error handling
     try {
         const response = await fetch(`db.php?action=delete_product&id=${productId}`, {
             method: 'DELETE'
@@ -470,7 +496,7 @@ async function deleteProduct(productId) {
         if (result.success) {
             showNotification('Product deleted successfully!', 'success');
             loadManagerProducts();
-            loadProducts(); // Refresh customer view
+            loadProducts(); // Why: Refresh both views to remove deleted product
         } else {
             showNotification('Error deleting product: ' + (result.error || 'Unknown error'), 'error');
         }
@@ -480,7 +506,9 @@ async function deleteProduct(productId) {
     }
 }
 
+// Transaction Display: Load and render recent orders
 async function loadTransactions() {
+    // Why: Separate transaction loading for manager order management
     try {
         const response = await fetch('db.php?action=get_transactions');
         if (!response.ok) throw new Error('Network response was not ok');
@@ -495,6 +523,7 @@ async function loadTransactions() {
             return;
         }
         
+        // Why: Transaction rendering with status management controls
         transactions.forEach(transaction => {
             const transactionElement = document.createElement('div');
             transactionElement.className = 'transaction-item';
@@ -532,8 +561,9 @@ async function loadTransactions() {
     }
 }
 
-// Update order status
+// Order Status Management: Update order delivery status
 async function updateOrderStatus(orderId, status) {
+    // Why: Async status update with comprehensive error handling
     try {
         const response = await fetch('db.php?action=update_order_status', {
             method: 'POST',
@@ -552,7 +582,7 @@ async function updateOrderStatus(orderId, status) {
         
         if (result.success) {
             showNotification(`Order marked as ${status}!`, 'success');
-            loadTransactions();
+            loadTransactions(); // Why: Refresh transactions to show updated status
         } else {
             showNotification('Error updating order: ' + (result.error || 'Unknown error'), 'error');
         }
@@ -562,11 +592,12 @@ async function updateOrderStatus(orderId, status) {
     }
 }
 
-// Handle product form submission
+// Product Creation: Handle new product form submission
 productForm.addEventListener('submit', async (e) => {
+    // Why: Prevent default form submission for custom handling
     e.preventDefault();
     
-    // Validate form
+    // Why: Form validation prevents incomplete product creation
     const productName = document.getElementById('productName').value.trim();
     const productCategory = document.getElementById('productCategory').value;
     const productPrice = document.getElementById('productPrice').value;
@@ -577,6 +608,7 @@ productForm.addEventListener('submit', async (e) => {
         return;
     }
     
+    // Why: Form data preparation for server creation
     const productData = {
         name: productName,
         category: productCategory,
@@ -584,6 +616,7 @@ productForm.addEventListener('submit', async (e) => {
         stock: parseInt(productStock)
     };
     
+    // Why: Async creation with comprehensive error handling
     try {
         const response = await fetch('db.php?action=add_product', {
             method: 'POST',
@@ -604,7 +637,7 @@ productForm.addEventListener('submit', async (e) => {
             showNotification('Product added successfully!', 'success');
             productForm.reset();
             loadManagerProducts();
-            loadProducts(); // Refresh customer view
+            loadProducts(); // Why: Refresh both views to show new product
         } else {
             showNotification('Error adding product: ' + (result.error || 'Unknown error'), 'error');
         }
@@ -614,7 +647,8 @@ productForm.addEventListener('submit', async (e) => {
     }
 });
 
-// Initialize the app
+// Application Initialization: Load initial data when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
+    // Why: Initial data loading ensures app is ready for user interaction
     loadProducts();
 });
