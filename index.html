@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashik's Organic Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌱</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌱 Ashik's Organic Store</h1>
+            <p class="subtitle">Ekkere Khati Mal</p>
+            <div class="tabs">
+                <button id="customerTab" class="tab-btn active" onclick="switchTab('customer')">Customer View</button>
+                <button id="managerTab" class="tab-btn" onclick="switchTab('manager')">Manager Panel</button>
+            </div>
+        </header>
+
+        <main>
+            <!-- Customer View -->
+            <section id="customerView" class="view active">
+                <div class="glass-card">
+                    <h2>Available Products</h2>
+                    <div id="productGrid" class="product-grid"></div>
+                </div>
+
+                <div class="glass-card">
+                    <h2>Place Your Order</h2>
+                    <form id="orderForm">
+                        <div class="form-group">
+                            <label for="customerName">Full Name</label>
+                            <input type="text" id="customerName" placeholder="Enter your name" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="customerPhone">Phone Number</label>
+                                <input type="tel" id="customerPhone" placeholder="01XXXXXXXXX" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="customerEmail">Email (Optional)</label>
+                                <input type="email" id="customerEmail" placeholder="your@email.com">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="customerAddress">Delivery Address</label>
+                            <textarea id="customerAddress" placeholder="Enter your full address" required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Selected Items</label>
+                            <div id="selectedItems" class="selected-items">
+                                <p class="placeholder">No items selected yet</p>
+                            </div>
+                        </div>
+                        
+                        <div class="order-summary">
+                            <div class="total">Total: <span id="totalAmount">BDT 0</span></div>
+                            <button type="submit" class="btn primary">Place Order</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Manager Panel -->
+            <section id="managerView" class="view">
+                <div class="glass-card">
+                    <h2>Add New Product</h2>
+                    <form id="productForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="productName">Product Name</label>
+                                <input type="text" id="productName" placeholder="e.g., Cow Milk" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="productCategory">Category</label>
+                                <select id="productCategory" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Dairy">Dairy</option>
+                                    <option value="Eggs">Eggs</option>
+                                    <option value="Fish">Fish</option>
+                                    <option value="Meat">Meat</option>
+                                    <option value="Honey">Honey</option>
+                                    <option value="Wool">Wool</option>
+                                    <option value="Leather">Leather</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="productPrice">Price per Unit (BDT)</label>
+                                <input type="number" id="productPrice" placeholder="0" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="productStock">Stock Quantity</label>
+                                <input type="number" id="productStock" placeholder="0" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn primary">Add Product</button>
+                    </form>
+                </div>
+
+                <div class="glass-card">
+                    <h2>Manage Products</h2>
+                    <div id="managerProducts" class="product-grid"></div>
+                </div>
+
+                <div class="glass-card">
+                    <h2>Recent Transactions</h2>
+                    <div id="transactionsList"></div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="footer">
+            <p>Made with 😢 by Ashik | 
+                <a href="https://github.com/ashik-maybe" target="_blank" rel="noopener noreferrer">GitHub</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+
+    <!-- Modal for editing products -->
+    <div id="editModal" class="modal">
+        <div class="modal-content glass-card">
+            <div class="modal-header">
+                <h2>Edit Product</h2>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editProductForm">
+                    <input type="hidden" id="editProductId">
+                    
+                    <div class="form-group">
+                        <label for="editProductName">Product Name</label>
+                        <input type="text" id="editProductName" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editProductCategory">Category</label>
+                            <select id="editProductCategory" required>
+                                <option value="Dairy">Dairy</option>
+                                <option value="Eggs">Eggs</option>
+                                <option value="Fish">Fish</option>
+                                <option value="Meat">Meat</option>
+                                <option value="Honey">Honey</option>
+                                <option value="Wool">Wool</option>
+                                <option value="Leather">Leather</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="editProductPrice">Price (BDT)</label>
+                            <input type="number" id="editProductPrice" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editProductStock">Stock Quantity</label>
+                            <input type="number" id="editProductStock" required>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn secondary" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="btn primary">Update Product</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
