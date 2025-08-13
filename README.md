@@ -1,5 +1,5 @@
 # 🌱 Ashik's Organic Store
-*Ekkere Khati Mal*
+*Everything sold here is 100% natural and locally sourced*
 
 ## 🚀 Quick Setup
 
